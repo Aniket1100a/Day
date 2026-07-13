@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF7F1;
+    --blush:#F6D7DD;
+    --rose:#C97B84;
+    --rose-deep:#B15D6B;
+    --plum:#5B3A4A;
+    --gold:#E3AE4E;
+    --ink:#3D2B2E;
+    --paper:#FFFDFB;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Manrope', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    margin:0 0 .4em;
+    color:var(--plum);
+  }
+  .script{
+    font-family:'Caveat', cursive;
+    color:var(--rose-deep);
+  }
+  section{
+    max-width:640px;
+    margin:0 auto;
+    padding:64px 24px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ---------- floating hearts ambient bg ---------- */
+  .floaties{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+  }
+  .floaty{
+    position:absolute;
+    bottom:-40px;
+    font-size:20px;
+    opacity:.35;
+    animation:drift linear infinite;
+    color:var(--rose);
+  }
+  @keyframes drift{
+    0%{transform:translateY(0) rotate(0deg);opacity:0;}
+    10%{opacity:.35;}
+    90%{opacity:.25;}
+    100%{transform:translateY(-110vh) rotate(25deg);opacity:0;}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:40px;
+  }
+  .hero .heart{
+    font-size:44px;
+    animation:pulse 2.4s ease-in-out infinite;
+    margin-bottom:20px;
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.12);}
+  }
+  .hero h1{
+    font-size:clamp(32px,6vw,48px);
+    font-style:italic;
+  }
+  .hero p{
+    max-width:420px;
+    font-size:17px;
+    color:var(--plum);
+    opacity:.85;
+  }
+  .scroll-hint{
+    margin-top:40px;
+    font-size:14px;
+    color:var(--rose-deep);
+    opacity:.7;
+    letter-spacing:.04em;
+  }
+
+  /* ---------- eyebrow ---------- */
+  .eyebrow{
+    font-family:'Caveat', cursive;
+    font-size:22px;
+    color:var(--rose-deep);
+    margin-bottom:2px;
+    display:block;
+  }
+
+  /* ---------- comfort menu ---------- */
+  .menu-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+    margin-top:28px;
+  }
+  .menu-card{
+    background:var(--paper);
+    border:1px solid var(--blush);
+    border-radius:18px;
+    padding:20px 16px;
+    text-align:left;
+    box-shadow:0 2px 10px rgba(91,58,74,.06);
+  }
+  .menu-card .icon{font-size:26px;display:block;margin-bottom:8px;}
+  .menu-card h3{
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    margin:0 0 4px;
+    color:var(--plum);
+  }
+  .menu-card p{
+    font-size:13.5px;
+    margin:0;
+    color:var(--ink);
+    opacity:.75;
+  }
+  @media(max-width:420px){
+    .menu-grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- hug button ---------- */
+  .hug-wrap{text-align:center;}
+  .hug-btn{
+    position:relative;
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    border:none;
+    background:radial-gradient(circle at 35% 30%, var(--rose), var(--rose-deep));
+    color:#fff;
+    font-family:'Fraunces', serif;
+    font-size:18px;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(193,110,120,.35);
+    transition:transform .15s ease;
+    margin:24px auto 8px;
+  }
+  .hug-btn:hover{transform:scale(1.04);}
+  .hug-btn:active{transform:scale(.96);}
+  .hug-msg{
+    min-height:60px;
+    max-width:380px;
+    margin:20px auto 0;
+    font-size:17px;
+    font-style:italic;
+    color:var(--plum);
+    opacity:0;
+    transition:opacity .5s ease;
+  }
+  .hug-msg.show{opacity:1;}
+  .burst{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+  .burst span{
+    position:absolute;
+    top:50%;left:50%;
+    font-size:18px;
+    opacity:0;
+  }
+
+  /* ---------- jar ---------- */
+  .jar-wrap{text-align:center;}
+  .jar{
+    width:120px;
+    height:130px;
+    margin:20px auto 4px;
+    position:relative;
+  }
+  .jar svg{width:100%;height:100%;}
+  .draw-btn{
+    background:var(--gold);
+    color:var(--plum);
+    border:none;
+    padding:12px 26px;
+    border-radius:30px;
+    font-family:'Manrope', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(227,174,78,.4);
+    transition:transform .15s ease;
+  }
+  .draw-btn:hover{transform:translateY(-2px);}
+  .note-card{
+    max-width:380px;
+    margin:26px auto 0;
+    background:var(--paper);
+    border:1px dashed var(--rose);
+    border-radius:14px;
+    padding:22px 24px;
+    font-family:'Caveat', cursive;
+    font-size:22px;
+    color:var(--plum);
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .note-card.show{opacity:1;transform:translateY(0);}
+
+  /* ---------- checklist ---------- */
+  .checklist{
+    margin-top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .check-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--paper);
+    border:1px solid var(--blush);
+    border-radius:14px;
+    padding:14px 16px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .check-item input{
+    width:20px;height:20px;
+    accent-color:var(--rose);
+    flex-shrink:0;
+  }
+  .check-item span{font-size:15px;}
+  .check-item.done span{
+    text-decoration:line-through;
+    opacity:.5;
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    text-align:center;
+    padding:60px 24px 80px;
+  }
+  footer .heart-doodle{font-size:26px;margin-bottom:10px;}
+  footer p{
+    font-family:'Caveat', cursive;
+    font-size:24px;
+    color:var(--plum);
+    margin:0;
+  }
+  footer small{
+    display:block;
+    margin-top:6px;
+    font-family:'Manrope',sans-serif;
+    font-size:12px;
+    color:var(--rose-deep);
+    opacity:.6;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="floaties" id="floaties"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="heart">🤍</div>
+  <h1>Hey <span data-name="her">Love</span></h1>
+  <p>I know today's been a lot — cramps, tiredness, all of it. I made you this little corner of the internet just to say: I see you, and I've got you today.</p>
+  <div class="scroll-hint">scroll down, this is for you ↓</div>
+</section>
+
+<!-- COMFORT MENU -->
+<section>
+  <span class="eyebrow">a little care menu</span>
+  <h2>Whatever you need today</h2>
+  <div class="menu-grid">
+    <div class="menu-card"><span class="icon">🫖</span><h3>Warm tea</h3><p>Chamomile or ginger — whatever sounds good right now.</p></div>
+    <div class="menu-card"><span class="icon">🔥</span><h3>Heating pad</h3><p>On low, right where it hurts most.</p></div>
+    <div class="menu-card"><span class="icon">🍫</span><h3>Chocolate</h3><p>The good kind. No judgment, just joy.</p></div>
+    <div class="menu-card"><span class="icon">🛋️</span><h3>Rest</h3><p>You don't have to do anything today. Really.</p></div>
+    <div class="menu-card"><span class="icon">💊</span><h3>Meds &amp; water</h3><p>A little relief and a big glass of water.</p></div>
+    <div class="menu-card"><span class="icon">🎬</span><h3>Comfort show</h3><p>Whatever makes you laugh or zone out for a while.</p></div>
+  </div>
+</section>
+
+<!-- HUG BUTTON -->
+<section class="hug-wrap">
+  <span class="eyebrow">need this right now?</span>
+  <h2>Tap for a hug</h2>
+  <button class="hug-btn" id="hugBtn">
+    Tap here
+    <div class="burst" id="burst"></div>
+  </button>
+  <div class="hug-msg" id="hugMsg"></div>
+</section>
+
+<!-- LOVE JAR -->
+<section class="jar-wrap">
+  <span class="eyebrow">whenever you need reminding</span>
+  <h2>A jar full of reasons</h2>
+  <div class="jar">
+    <svg viewBox="0 0 100 110" fill="none">
+      <path d="M25 20 H75 V95 Q75 105 65 105 H35 Q25 105 25 95 Z" fill="#FFFDFB" stroke="#C97B84" stroke-width="2.5"/>
+      <rect x="30" y="10" width="40" height="14" rx="4" fill="#E3AE4E"/>
+      <rect x="34" y="4" width="32" height="8" rx="3" fill="#5B3A4A"/>
+      <circle cx="42" cy="55" r="3" fill="#C97B84" opacity=".6"/>
+      <circle cx="58" cy="70" r="3" fill="#E3AE4E" opacity=".7"/>
+      <circle cx="50" cy="40" r="3" fill="#C97B84" opacity=".5"/>
+    </svg>
+  </div>
+  <button class="draw-btn" id="drawBtn">Draw a note</button>
+  <div class="note-card" id="noteCard"></div>
+</section>
+
+<!-- CHECKLIST -->
+<section>
+  <span class="eyebrow">no pressure, just options</span>
+  <h2>Today's gentle to-do list</h2>
+  <div class="checklist" id="checklist">
+    <label class="check-item"><input type="checkbox"><span>Drink some water</span></label>
+    <label class="check-item"><input type="checkbox"><span>Take meds if you need them</span></label>
+    <label class="check-item"><input type="checkbox"><span>Eat something warm</span></label>
+    <label class="check-item"><input type="checkbox"><span>Rest without any guilt</span></label>
+    <label class="check-item"><input type="checkbox"><span>Text me if you need anything at all</span></label>
+  </div>
+</section>
+
+<footer>
+  <div class="heart-doodle">🤍</div>
+  <p>You're doing great. I love you.</p>
+  <small>made with love by <span data-name="you">Me</span></small>
+</footer>
+
+<script>
+  /* ============================================
+     👋 QUICK EDIT ZONE — change these two lines
+     ============================================ */
+  const HER_NAME = "Neel";   // 👈 put her name here
+  const YOUR_NAME = "Aniket";    // 👈 put your name here
+
+  document.querySelectorAll('[data-name="her"]').forEach(el => el.textContent = HER_NAME);
+  document.querySelectorAll('[data-name="you"]').forEach(el => el.textContent = YOUR_NAME);
+
+  /* floating hearts */
+  const floatiesEl = document.getElementById('floaties');
+  const symbols = ['🤍','♡','✿'];
+  for(let i=0;i<10;i++){
+    const el = document.createElement('span');
+    el.className = 'floaty';
+    el.textContent = symbols[i % symbols.length];
+    el.style.left = Math.random()*100 + 'vw';
+    el.style.animationDuration = (14 + Math.random()*10) + 's';
+    el.style.animationDelay = (Math.random()*14) + 's';
+    el.style.fontSize = (14 + Math.random()*14) + 'px';
+    floatiesEl.appendChild(el);
+  }
+
+  /* hug button */
+  const hugMessages = [
+    "Here's a big, warm hug — the kind that doesn't let go until you feel better.",
+    "Wrapping you up tight. You're not doing this alone today.",
+    "Sending all my warmth straight to you, right now.",
+    "Squeezing you close. Breathe — it'll pass, and I'm right here.",
+    "Consider yourself hugged. Extra tight, extra long."
+  ];
+  const hugBtn = document.getElementById('hugBtn');
+  const hugMsg = document.getElementById('hugMsg');
+  const burst = document.getElementById('burst');
+  let lastHug = -1;
+  hugBtn.addEventListener('click', () => {
+    let i;
+    do { i = Math.floor(Math.random()*hugMessages.length); } while(i === lastHug && hugMessages.length>1);
+    lastHug = i;
+    hugMsg.textContent = hugMessages[i];
+    hugMsg.classList.remove('show');
+    void hugMsg.offsetWidth;
+    hugMsg.classList.add('show');
+
+    burst.innerHTML = '';
+    for(let j=0;j<8;j++){
+      const s = document.createElement('span');
+      s.textContent = '🤍';
+      const angle = (Math.PI*2/8)*j;
+      const dist = 70;
+      s.style.transition = 'all .8s ease-out';
+      burst.appendChild(s);
+      requestAnimationFrame(()=>{
+        s.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+        s.style.opacity = '1';
+        setTimeout(()=>{ s.style.opacity = '0'; }, 500);
+      });
+    }
+  });
+
+  /* love jar */
+  const notes = [
+    "The way you laugh at your own jokes before you even finish telling them.",
+    "How you make even the most ordinary days feel a little softer.",
+    "Your strength — the kind you don't even notice you have.",
+    "How safe I feel just being near you.",
+    "The way you care for everyone around you, even on your hardest days.",
+    "How you remember little things other people forget.",
+    "Your whole heart. All of it, every part.",
+    "The way your face changes when you talk about something you love.",
+    "How brave you are, even when you don't feel it.",
+    "Just... you. Exactly as you are today."
+  ];
+  const drawBtn = document.getElementById('drawBtn');
+  const noteCard = document.getElementById('noteCard');
+  let drawn = [];
+  drawBtn.addEventListener('click', () => {
+    if(drawn.length === notes.length) drawn = [];
+    let idx;
+    do { idx = Math.floor(Math.random()*notes.length); } while(drawn.includes(idx));
+    drawn.push(idx);
+    noteCard.textContent = "“" + notes[idx] + "”";
+    noteCard.classList.remove('show');
+    void noteCard.offsetWidth;
+    noteCard.classList.add('show');
+  });
+
+  /* checklist */
+  document.querySelectorAll('.check-item').forEach(item => {
+    const input = item.querySelector('input');
+    input.addEventListener('change', () => {
+      item.classList.toggle('done', input.checked);
+    });
+  });
+</script>
+</body>
+</html>
