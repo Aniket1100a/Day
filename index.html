@@ -6,37 +6,43 @@
 <title>For you</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Manrope:wght@400;500;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#FFF7F1;
-    --blush:#F6D7DD;
-    --rose:#C97B84;
-    --rose-deep:#B15D6B;
-    --plum:#5B3A4A;
-    --gold:#E3AE4E;
-    --ink:#3D2B2E;
+    --cream:#FFF6F9;
+    --blush:#FFD9E6;
+    --pink:#FF9EBB;
+    --pink-deep:#F0729A;
+    --lavender:#C9B6F5;
+    --mint:#AEEBCE;
+    --plum:#6B4160;
+    --gold:#FFC24B;
+    --ink:#4A2E42;
     --paper:#FFFDFB;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
     margin:0;
-    background:var(--cream);
+    background:
+      radial-gradient(circle at 15% 8%, var(--mint) 0%, transparent 40%),
+      radial-gradient(circle at 90% 15%, var(--lavender) 0%, transparent 38%),
+      var(--cream);
+    background-attachment:fixed;
     color:var(--ink);
     font-family:'Manrope', sans-serif;
     line-height:1.6;
     overflow-x:hidden;
   }
   h1,h2{
-    font-family:'Fraunces', serif;
+    font-family:'Fredoka', sans-serif;
     font-weight:600;
     margin:0 0 .4em;
-    color:var(--plum);
+    color:var(--pink-deep);
   }
   .script{
     font-family:'Caveat', cursive;
-    color:var(--rose-deep);
+    color:var(--pink-deep);
   }
   section{
     max-width:640px;
@@ -58,15 +64,23 @@
     position:absolute;
     bottom:-40px;
     font-size:20px;
-    opacity:.35;
+    opacity:.45;
     animation:drift linear infinite;
-    color:var(--rose);
   }
   @keyframes drift{
     0%{transform:translateY(0) rotate(0deg);opacity:0;}
-    10%{opacity:.35;}
-    90%{opacity:.25;}
-    100%{transform:translateY(-110vh) rotate(25deg);opacity:0;}
+    10%{opacity:.45;}
+    50%{transform:translateY(-55vh) rotate(-15deg);}
+    90%{opacity:.3;}
+    100%{transform:translateY(-110vh) rotate(20deg);opacity:0;}
+  }
+  .sparkle{
+    position:absolute;
+    animation:twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:.15;transform:scale(.8) rotate(0deg);}
+    50%{opacity:.9;transform:scale(1.15) rotate(15deg);}
   }
 
   /* ---------- hero ---------- */
@@ -80,37 +94,56 @@
     padding-top:40px;
   }
   .hero .heart{
-    font-size:44px;
-    animation:pulse 2.4s ease-in-out infinite;
-    margin-bottom:20px;
+    font-size:50px;
+    animation:bounce 1.8s ease-in-out infinite;
+    margin-bottom:16px;
+    display:inline-block;
   }
-  @keyframes pulse{
-    0%,100%{transform:scale(1);}
-    50%{transform:scale(1.12);}
+  @keyframes bounce{
+    0%,100%{transform:translateY(0) rotate(-4deg);}
+    50%{transform:translateY(-14px) rotate(4deg);}
+  }
+  .hero-badge{
+    display:inline-block;
+    background:var(--gold);
+    color:var(--plum);
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:18px;
+    padding:6px 18px;
+    border-radius:20px;
+    transform:rotate(-6deg);
+    box-shadow:0 3px 0 rgba(0,0,0,.08);
+    margin-bottom:18px;
   }
   .hero h1{
-    font-size:clamp(32px,6vw,48px);
-    font-style:italic;
+    font-size:clamp(34px,7vw,52px);
   }
   .hero p{
     max-width:420px;
     font-size:17px;
     color:var(--plum);
-    opacity:.85;
+    opacity:.9;
   }
   .scroll-hint{
     margin-top:40px;
-    font-size:14px;
-    color:var(--rose-deep);
-    opacity:.7;
+    font-size:15px;
+    color:var(--pink-deep);
+    opacity:.8;
     letter-spacing:.04em;
+    animation:bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(5px);}
   }
 
   /* ---------- eyebrow ---------- */
   .eyebrow{
     font-family:'Caveat', cursive;
-    font-size:22px;
-    color:var(--rose-deep);
+    font-weight:700;
+    font-size:24px;
+    color:var(--pink-deep);
     margin-bottom:2px;
     display:block;
   }
@@ -124,18 +157,26 @@
   }
   .menu-card{
     background:var(--paper);
-    border:1px solid var(--blush);
-    border-radius:18px;
+    border:2.5px solid var(--blush);
+    border-radius:20px;
     padding:20px 16px;
     text-align:left;
-    box-shadow:0 2px 10px rgba(91,58,74,.06);
+    box-shadow:0 4px 0 var(--blush);
+    transition:transform .2s ease, box-shadow .2s ease;
   }
-  .menu-card .icon{font-size:26px;display:block;margin-bottom:8px;}
+  .menu-card:nth-child(odd){transform:rotate(-1.5deg);}
+  .menu-card:nth-child(even){transform:rotate(1.5deg);}
+  .menu-card:hover{
+    transform:rotate(0deg) translateY(-4px) scale(1.03);
+    box-shadow:0 8px 0 var(--blush);
+  }
+  .menu-card .icon{font-size:28px;display:block;margin-bottom:8px;}
   .menu-card h3{
-    font-family:'Fraunces', serif;
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
     font-size:16px;
     margin:0 0 4px;
-    color:var(--plum);
+    color:var(--pink-deep);
   }
   .menu-card p{
     font-size:13.5px;
@@ -151,27 +192,36 @@
   .hug-wrap{text-align:center;}
   .hug-btn{
     position:relative;
-    width:150px;
-    height:150px;
+    width:160px;
+    height:160px;
     border-radius:50%;
-    border:none;
-    background:radial-gradient(circle at 35% 30%, var(--rose), var(--rose-deep));
+    border:4px solid #fff;
+    background:radial-gradient(circle at 35% 30%, var(--pink), var(--pink-deep));
     color:#fff;
-    font-family:'Fraunces', serif;
-    font-size:18px;
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:19px;
     cursor:pointer;
-    box-shadow:0 8px 24px rgba(193,110,120,.35);
+    box-shadow:0 8px 0 var(--blush), 0 14px 24px rgba(240,114,154,.3);
     transition:transform .15s ease;
     margin:24px auto 8px;
+    animation:wiggle 3.5s ease-in-out infinite;
   }
-  .hug-btn:hover{transform:scale(1.04);}
-  .hug-btn:active{transform:scale(.96);}
+  @keyframes wiggle{
+    0%,88%,100%{transform:rotate(0deg);}
+    90%{transform:rotate(-4deg);}
+    94%{transform:rotate(4deg);}
+    97%{transform:rotate(-2deg);}
+  }
+  .hug-btn:hover{transform:scale(1.06);}
+  .hug-btn:active{transform:scale(.94) translateY(4px);box-shadow:0 3px 0 var(--blush);}
   .hug-msg{
     min-height:60px;
     max-width:380px;
     margin:20px auto 0;
-    font-size:17px;
-    font-style:italic;
+    font-family:'Caveat', cursive;
+    font-size:24px;
+    font-weight:600;
     color:var(--plum);
     opacity:0;
     transition:opacity .5s ease;
@@ -201,32 +251,34 @@
   .draw-btn{
     background:var(--gold);
     color:var(--plum);
-    border:none;
-    padding:12px 26px;
+    border:3px solid #fff;
+    padding:13px 28px;
     border-radius:30px;
-    font-family:'Manrope', sans-serif;
-    font-weight:700;
-    font-size:14px;
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:15px;
     cursor:pointer;
-    box-shadow:0 4px 14px rgba(227,174,78,.4);
-    transition:transform .15s ease;
+    box-shadow:0 5px 0 #E0A833;
+    transition:transform .15s ease, box-shadow .15s ease;
   }
   .draw-btn:hover{transform:translateY(-2px);}
+  .draw-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #E0A833;}
   .note-card{
     max-width:380px;
     margin:26px auto 0;
     background:var(--paper);
-    border:1px dashed var(--rose);
-    border-radius:14px;
+    border:2.5px dashed var(--pink);
+    border-radius:18px;
     padding:22px 24px;
     font-family:'Caveat', cursive;
-    font-size:22px;
+    font-weight:600;
+    font-size:23px;
     color:var(--plum);
     opacity:0;
-    transform:translateY(8px);
+    transform:translateY(8px) rotate(-1deg);
     transition:opacity .4s ease, transform .4s ease;
   }
-  .note-card.show{opacity:1;transform:translateY(0);}
+  .note-card.show{opacity:1;transform:translateY(0) rotate(-1deg);}
 
   /* ---------- checklist ---------- */
   .checklist{
@@ -240,15 +292,20 @@
     align-items:center;
     gap:12px;
     background:var(--paper);
-    border:1px solid var(--blush);
-    border-radius:14px;
+    border:2px solid var(--blush);
+    border-radius:16px;
     padding:14px 16px;
     cursor:pointer;
     user-select:none;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .check-item.done{
+    border-color:var(--mint);
+    transform:scale(1.02);
   }
   .check-item input{
-    width:20px;height:20px;
-    accent-color:var(--rose);
+    width:22px;height:22px;
+    accent-color:var(--pink-deep);
     flex-shrink:0;
   }
   .check-item span{font-size:15px;}
@@ -262,11 +319,17 @@
     text-align:center;
     padding:60px 24px 80px;
   }
-  footer .heart-doodle{font-size:26px;margin-bottom:10px;}
+  footer .heart-doodle{
+    font-size:30px;
+    margin-bottom:10px;
+    display:inline-block;
+    animation:bounce 1.8s ease-in-out infinite;
+  }
   footer p{
     font-family:'Caveat', cursive;
-    font-size:24px;
-    color:var(--plum);
+    font-weight:700;
+    font-size:26px;
+    color:var(--pink-deep);
     margin:0;
   }
   footer small{
@@ -274,7 +337,7 @@
     margin-top:6px;
     font-family:'Manrope',sans-serif;
     font-size:12px;
-    color:var(--rose-deep);
+    color:var(--pink-deep);
     opacity:.6;
   }
 
@@ -289,7 +352,8 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="heart">🤍</div>
+  <span class="hero-badge">just for you 💌</span>
+  <div class="heart">🩷</div>
   <h1>Hey <span data-name="her">Love</span></h1>
   <p>I know today's been a lot — cramps, tiredness, all of it. I made you this little corner of the internet just to say: I see you, and I've got you today.</p>
   <div class="scroll-hint">scroll down, this is for you ↓</div>
@@ -326,12 +390,13 @@
   <h2>A jar full of reasons</h2>
   <div class="jar">
     <svg viewBox="0 0 100 110" fill="none">
-      <path d="M25 20 H75 V95 Q75 105 65 105 H35 Q25 105 25 95 Z" fill="#FFFDFB" stroke="#C97B84" stroke-width="2.5"/>
-      <rect x="30" y="10" width="40" height="14" rx="4" fill="#E3AE4E"/>
-      <rect x="34" y="4" width="32" height="8" rx="3" fill="#5B3A4A"/>
-      <circle cx="42" cy="55" r="3" fill="#C97B84" opacity=".6"/>
-      <circle cx="58" cy="70" r="3" fill="#E3AE4E" opacity=".7"/>
-      <circle cx="50" cy="40" r="3" fill="#C97B84" opacity=".5"/>
+      <path d="M25 20 H75 V95 Q75 105 65 105 H35 Q25 105 25 95 Z" fill="#FFFDFB" stroke="#FF9EBB" stroke-width="3"/>
+      <rect x="30" y="10" width="40" height="14" rx="5" fill="#FFC24B"/>
+      <rect x="34" y="4" width="32" height="8" rx="3" fill="#F0729A"/>
+      <circle cx="42" cy="55" r="3.5" fill="#FF9EBB" opacity=".7"/>
+      <circle cx="58" cy="70" r="3.5" fill="#FFC24B" opacity=".8"/>
+      <circle cx="50" cy="40" r="3.5" fill="#C9B6F5" opacity=".7"/>
+      <circle cx="35" cy="75" r="3" fill="#AEEBCE" opacity=".7"/>
     </svg>
   </div>
   <button class="draw-btn" id="drawBtn">Draw a note</button>
@@ -367,19 +432,31 @@
   document.querySelectorAll('[data-name="her"]').forEach(el => el.textContent = HER_NAME);
   document.querySelectorAll('[data-name="you"]').forEach(el => el.textContent = YOUR_NAME);
 
-  /* floating hearts */
+  /* floating cute bits */
   const floatiesEl = document.getElementById('floaties');
-  const symbols = ['🤍','♡','✿'];
-  for(let i=0;i<10;i++){
+  const symbols = ['🩷','✨','🌸','💕','⭐'];
+  for(let i=0;i<12;i++){
     const el = document.createElement('span');
     el.className = 'floaty';
     el.textContent = symbols[i % symbols.length];
     el.style.left = Math.random()*100 + 'vw';
-    el.style.animationDuration = (14 + Math.random()*10) + 's';
+    el.style.animationDuration = (12 + Math.random()*10) + 's';
     el.style.animationDelay = (Math.random()*14) + 's';
     el.style.fontSize = (14 + Math.random()*14) + 'px';
     floatiesEl.appendChild(el);
   }
+  const sparklePositions = [[6,10],[92,20],[10,60],[88,70],[50,5],[20,85]];
+  sparklePositions.forEach(([x,y],i)=>{
+    const el = document.createElement('span');
+    el.className = 'sparkle';
+    el.textContent = '✨';
+    el.style.left = x + 'vw';
+    el.style.top = y + '%';
+    el.style.fontSize = (12 + (i%3)*6) + 'px';
+    el.style.animationDuration = (2 + (i%3)) + 's';
+    el.style.animationDelay = (i*0.4) + 's';
+    floatiesEl.appendChild(el);
+  });
 
   /* hug button */
   const hugMessages = [
@@ -402,16 +479,17 @@
     void hugMsg.offsetWidth;
     hugMsg.classList.add('show');
 
+    const confettiBits = ['🩷','✨','🌸','💕','⭐'];
     burst.innerHTML = '';
-    for(let j=0;j<8;j++){
+    for(let j=0;j<10;j++){
       const s = document.createElement('span');
-      s.textContent = '🤍';
-      const angle = (Math.PI*2/8)*j;
-      const dist = 70;
+      s.textContent = confettiBits[j % confettiBits.length];
+      const angle = (Math.PI*2/10)*j;
+      const dist = 75;
       s.style.transition = 'all .8s ease-out';
       burst.appendChild(s);
       requestAnimationFrame(()=>{
-        s.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+        s.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) rotate(${(Math.random()*80)-40}deg)`;
         s.style.opacity = '1';
         setTimeout(()=>{ s.style.opacity = '0'; }, 500);
       });
