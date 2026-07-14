@@ -1,8 +1,30 @@
 # For her 🤍
 
-Two pages, one repo:
+Three pages, one repo:
 - `index.html` — the comfort/care page
 - `gallery.html` — reels & photos gallery, auto-loads from the `media/` folder
+- `auth.js` — the lock screen shared by both pages (see below)
+- `generate-hash.html` — private helper tool, not linked from the site, for adding new questions
+
+## The lock 🔒
+Both pages open behind a "just for us" question gate — a random one of a few personal
+questions is shown, and getting any one right unlocks the whole site on that device
+(it stays unlocked there, using the browser's local storage, so it's not asked every visit).
+
+**This is a fun/private gate, not real security.** Answers are stored as SHA-256 hashes
+in `auth.js` rather than plain text, so casual view-source snooping won't reveal them —
+but anyone determined enough could still get past it. Don't put anything actually
+sensitive behind it.
+
+- Edit the questions/answers: open `auth.js`, look for the `QUESTIONS` array near the top.
+- To add or change an answer: open `generate-hash.html` in a browser, type the exact
+  answer, and it'll spit out a hash to paste into `auth.js`.
+- Needs to be served over **https** (GitHub Pages is fine) or `localhost` — it uses
+  `crypto.subtle`, which browsers disable on plain `http`/local file access for security
+  reasons. If you open the file directly by double-clicking it, the lock will just be
+  skipped (fails open, not closed).
+- To re-lock a device (e.g. to test it again), open the browser console on the page and run:
+  `localStorage.removeItem('loveGateUnlocked')`, then refresh.
 
 ## Personalize the home page
 Open `index.html`, near the bottom of the `<script>`:

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hash generator (private tool)</title>
+<style>
+  body{font-family:sans-serif;max-width:480px;margin:60px auto;padding:0 20px;color:#333;}
+  h1{font-size:18px;}
+  input{width:100%;padding:10px;font-size:15px;box-sizing:border-box;margin-top:6px;}
+  button{margin-top:10px;padding:10px 18px;font-size:14px;cursor:pointer;}
+  code{display:block;margin-top:14px;padding:12px;background:#f4f4f4;border-radius:8px;word-break:break-all;font-size:13px;}
+  p.note{font-size:13px;color:#777;}
+</style>
+</head>
+<body>
+  <h1>🔧 Answer → hash generator</h1>
+  <p class="note">Not linked from the site — only for whoever is editing <code>auth.js</code>. Type the exact answer text you want to accept, click generate, and paste the resulting hash into the <code>hashes</code> array for that question.</p>
+  <input id="answer" type="text" placeholder="type the answer..." />
+  <button id="go">Generate hash</button>
+  <code id="out">hash will show up here</code>
+
+  <script>
+    function normalize(str){
+      return str.toLowerCase().trim().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ');
+    }
+    async function sha256Hex(str){
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+    document.getElementById('go').addEventListener('click', async () => {
+      const val = document.getElementById('answer').value;
+      if(!val.trim()){ return; }
+      const hash = await sha256Hex(normalize(val));
+      document.getElementById('out').textContent = hash;
+    });
+  </script>
+</body>
+</html>
