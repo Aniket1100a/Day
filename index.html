@@ -110,6 +110,45 @@
     0%,100%{transform:translateY(0) rotate(-4deg);}
     50%{transform:translateY(-14px) rotate(4deg);}
   }
+  .hero-photo-wrap{
+    position:relative;
+    width:150px;
+    height:150px;
+    margin:0 auto 18px;
+    animation:floatPhoto 4s ease-in-out infinite;
+  }
+  @keyframes floatPhoto{
+    0%,100%{transform:translateY(0) rotate(-2deg);}
+    50%{transform:translateY(-10px) rotate(2deg);}
+  }
+  .hero-photo{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    object-fit:cover;
+    display:block;
+    border:5px solid var(--paper);
+    outline:3px solid var(--pink);
+    outline-offset:3px;
+    box-shadow:0 12px 26px rgba(74,46,66,.28);
+    background:var(--blush);
+  }
+  .hero-photo-badge{
+    position:absolute;
+    bottom:-4px;
+    right:-4px;
+    font-size:24px;
+    background:var(--paper);
+    border:2px solid var(--blush);
+    border-radius:50%;
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 3px 0 rgba(0,0,0,.08);
+    transform:rotate(-8deg);
+  }
   .hero-badge{
     display:inline-block;
     background:var(--gold);
@@ -360,7 +399,11 @@
 <!-- HERO -->
 <section class="hero">
   <span class="hero-badge">just for you 💌</span>
-  <div class="heart">🩷</div>
+  <div class="hero-photo-wrap" id="heroPhotoWrap">
+    <img class="hero-photo" id="heroPhotoImg" alt="">
+    <span class="hero-photo-badge">🩷</span>
+  </div>
+  <div class="heart" id="heroFallbackHeart" style="display:none;">🩷</div>
   <h1>Hey <span data-name="her">Love</span></h1>
   <p>I know today's been a lot — cramps, tiredness, all of it. I made you this little corner of the internet just to say: I see you, and I've got you today.</p>
   <div class="scroll-hint">scroll down, this is for you ↓</div>
@@ -432,13 +475,24 @@
 
 <script>
   /* ============================================
-     👋 QUICK EDIT ZONE — change these two lines
+     👋 QUICK EDIT ZONE — change these lines
      ============================================ */
   const HER_NAME = "Neel";   // 👈 put her name here
   const YOUR_NAME = "Aniket";    // 👈 put your name here
+  const HER_PHOTO = "media/photos/her.jpeg";   // 👈 path to her photo (drop the file in media/photos/)
 
   document.querySelectorAll('[data-name="her"]').forEach(el => el.textContent = HER_NAME);
   document.querySelectorAll('[data-name="you"]').forEach(el => el.textContent = YOUR_NAME);
+
+  /* show her photo in the circle if it loads; otherwise fall back to the heart emoji */
+  const heroPhotoImg = document.getElementById('heroPhotoImg');
+  const heroPhotoWrap = document.getElementById('heroPhotoWrap');
+  const heroFallbackHeart = document.getElementById('heroFallbackHeart');
+  heroPhotoImg.addEventListener('error', () => {
+    heroPhotoWrap.style.display = 'none';
+    heroFallbackHeart.style.display = 'inline-block';
+  });
+  heroPhotoImg.src = HER_PHOTO;
 
   /* floating cute bits */
   const floatiesEl = document.getElementById('floaties');
