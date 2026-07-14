@@ -194,6 +194,81 @@
     display:block;
   }
 
+  /* ---------- mood selector ---------- */
+  .mood-selector{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:20px 0 28px;
+    flex-wrap:wrap;
+  }
+  .mood-btn{
+    background:var(--paper);
+    border:2.5px solid var(--blush);
+    padding:8px 18px;
+    border-radius:20px;
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:all .2s;
+    color:var(--ink);
+    box-shadow:0 3px 0 var(--blush);
+  }
+  .mood-btn:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--blush);}
+  .mood-btn.active{
+    background:var(--pink);
+    color:white;
+    border-color:var(--pink-deep);
+    transform:translateY(2px);
+    box-shadow:none;
+  }
+  .mood-extra{
+    margin-top:24px;
+    padding:24px;
+    background:var(--paper);
+    border:2.5px dashed var(--lavender);
+    border-radius:24px;
+    display:none;
+    text-align:center;
+  }
+  .mood-extra.show{display:block;animation:fadeIn .4s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  #game-area{
+    height:180px;
+    background:var(--cream);
+    border-radius:16px;
+    position:relative;
+    overflow:hidden;
+    margin:15px 0;
+    border:1px solid var(--blush);
+    cursor:crosshair;
+  }
+  .game-heart{
+    position:absolute;
+    font-size:28px;
+    cursor:pointer;
+    user-select:none;
+    animation:heartPop .3s ease-out;
+  }
+  @keyframes heartPop{0%{transform:scale(0);} 80%{transform:scale(1.2);} 100%{transform:scale(1);}}
+  .quote-box{
+    font-family:'Caveat', cursive;
+    font-size:26px;
+    color:var(--plum);
+    margin:10px 0;
+    min-height:60px;
+  }
+  .game-stats{
+    display:flex;
+    justify-content:space-between;
+    font-family:'Fredoka', sans-serif;
+    font-size:14px;
+    color:var(--pink-deep);
+    margin-bottom:5px;
+  }
+
   /* ---------- comfort menu ---------- */
   .menu-grid{
     display:grid;
@@ -413,14 +488,21 @@
 <!-- COMFORT MENU -->
 <section>
   <span class="eyebrow">a little care menu</span>
-  <h2>Whatever you need today</h2>
-  <div class="menu-grid">
-    <div class="menu-card"><span class="icon">🫖</span><h3>Warm tea</h3><p>Chamomile or ginger — whatever sounds good right now.</p></div>
-    <div class="menu-card"><span class="icon">🔥</span><h3>Heating pad</h3><p>On low, right where it hurts most.</p></div>
-    <div class="menu-card"><span class="icon">🍫</span><h3>Chocolate</h3><p>The good kind. No judgment, just joy.</p></div>
-    <div class="menu-card"><span class="icon">🛋️</span><h3>Rest</h3><p>You don't have to do anything today. Really.</p></div>
-    <div class="menu-card"><span class="icon">💊</span><h3>Meds &amp; water</h3><p>A little relief and a big glass of water.</p></div>
-    <div class="menu-card"><span class="icon">🎬</span><h3>Comfort show</h3><p>Whatever makes you laugh or zone out for a while.</p></div>
+  <h2 id="menuTitle">Whatever you need today</h2>
+
+  <div class="mood-selector" id="moodSelector">
+    <button class="mood-btn" onclick="setMood('tired')">🥱 Tired</button>
+    <button class="mood-btn" onclick="setMood('sad')">😔 Sad</button>
+    <button class="mood-btn" onclick="setMood('anxious')">😟 Anxious</button>
+    <button class="mood-btn" onclick="setMood('bored')">🎡 Bored</button>
+  </div>
+
+  <div class="menu-grid" id="menuGrid">
+    <!-- suggestions will be injected here -->
+  </div>
+
+  <div id="moodExtra" class="mood-extra">
+     <!-- Game or quotes will go here -->
   </div>
 </section>
 
@@ -592,6 +674,149 @@
       item.classList.toggle('done', input.checked);
     });
   });
+
+  /* ============================================
+     ✨ MOOD-BASED COMFORT MENU LOGIC
+     ============================================ */
+  const MOOD_DATA = {
+    tired: {
+      title: "Gentle Rest & Recovery",
+      suggestions: [
+        { icon: "🫖", label: "Warm tea", desc: "Chamomile or ginger — whatever sounds good." },
+        { icon: "🔥", label: "Heating pad", desc: "On low, right where it hurts most." },
+        { icon: "🛋️", label: "Full rest", desc: "No chores, no calls. Just horizontal time." },
+        { icon: "🎬", label: "Comfort show", desc: "Something you've seen 100 times." },
+        { icon: "💊", label: "Meds & water", desc: "Keep that hydration up, love." },
+        { icon: "☁️", label: "Dim lights", desc: "Make your room a cozy cave." }
+      ]
+    },
+    sad: {
+      title: "Extra Love & Softness",
+      suggestions: [
+        { icon: "🫂", label: "Long hug", desc: "Sending a virtual one until I can give a real one." },
+        { icon: "🍫", label: "Comfort food", desc: "Chocolate, snacks, whatever brings a tiny smile." },
+        { icon: "🧸", label: "Softest blanket", desc: "Wrap yourself up like a burrito." },
+        { icon: "🎧", label: "Sweet music", desc: "Or something happy, if you're ready for it." },
+        { icon: "📱", label: "Call/Text me", desc: "I'm always here to listen to anything." },
+        { icon: "🎬", label: "Favorite movie", desc: "The one that always makes you feel better." }
+      ]
+    },
+    anxious: {
+      title: "Calming & Grounding",
+      suggestions: [
+        { icon: "🧘", label: "Deep breathing", desc: "4s in, 4s hold, 4s out. Let's do it together." },
+        { icon: "💧", label: "Cold water", desc: "Splash your face or hold a cold glass." },
+        { icon: "🧸", label: "Weighted pressure", desc: "A heavy blanket or a big pillow hug." },
+        { icon: "🎶", label: "Low-fi beats", desc: "Just some background noise to quiet the mind." },
+        { icon: "🖐️", label: "5-4-3-2-1 check", desc: "5 things you see, 4 you feel, 3 you hear..." },
+        { icon: "🍫", label: "Small snack", desc: "Focus on the taste and texture." }
+      ]
+    },
+    bored: {
+      title: "Fun & Distractions",
+      suggestions: [
+        { icon: "🎡", label: "Play a game", desc: "I put a little something below for you!" },
+        { icon: "📸", label: "Gallery trip", desc: "Go look at our favorite memories." },
+        { icon: "🎨", label: "Doodle time", desc: "Draw something silly and send it to me." },
+        { icon: "📖", label: "Random facts", desc: "Did you know sea otters hold hands?" },
+        { icon: "🎬", label: "New show", desc: "Time to start that series you bookmarked." },
+        { icon: "✉️", label: "Write a note", desc: "Tell me one thing you're looking forward to." }
+      ],
+      extra: 'bored'
+    }
+  };
+
+  const boredomQuotes = [
+    "You're the most interesting person I know, even when you're bored.",
+    "Boredom is just the pause before a great idea.",
+    "If you're bored, just remember I'm probably thinking about you right now.",
+    "You + Me = Never a dull moment (usually).",
+    "Go look at the gallery — I bet you'll smile."
+  ];
+
+  const menuGrid = document.getElementById('menuGrid');
+  const menuTitle = document.getElementById('menuTitle');
+  const moodExtra = document.getElementById('moodExtra');
+  let gameActive = false;
+  let score = 0;
+
+  window.setMood = function(mood) {
+    // update buttons
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${mood}'`));
+    });
+
+    const data = MOOD_DATA[mood];
+    menuTitle.textContent = data.title;
+
+    // update grid
+    menuGrid.innerHTML = '';
+    data.suggestions.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'menu-card';
+      card.innerHTML = `<span class="icon">${item.icon}</span><h3>${item.label}</h3><p>${item.desc}</p>`;
+      menuGrid.appendChild(card);
+    });
+
+    // extra content
+    if(data.extra === 'bored') {
+      moodExtra.classList.add('show');
+      initBoredContent();
+    } else {
+      moodExtra.classList.remove('show');
+      gameActive = false;
+    }
+  };
+
+  function initBoredContent() {
+    moodExtra.innerHTML = `
+      <h3 style="margin-top:0; color:var(--pink-deep);">Boredom Buster 🎡</h3>
+      <div class="quote-box" id="boredQuote">“${boredomQuotes[Math.floor(Math.random()*boredomQuotes.length)]}”</div>
+      <div class="game-stats">
+        <span>Catch the Hearts!</span>
+        <span>Score: <span id="game-score">0</span></span>
+      </div>
+      <div id="game-area"></div>
+      <button class="draw-btn" style="padding:8px 20px; font-size:13px; box-shadow:0 3px 0 #E0A833;" onclick="initBoredContent()">New Quote</button>
+    `;
+    startHeartGame();
+  }
+
+  function startHeartGame() {
+    const area = document.getElementById('game-area');
+    if(!area) return;
+    gameActive = true;
+    score = 0;
+    area.innerHTML = '';
+    spawnHeart();
+  }
+
+  function spawnHeart() {
+    if(!gameActive) return;
+    const area = document.getElementById('game-area');
+    if(!area) return;
+    const heart = document.createElement('div');
+    heart.className = 'game-heart';
+    heart.textContent = ['🩷','💖','✨','🍬','🌸'][Math.floor(Math.random()*5)];
+    heart.style.left = Math.random() * (area.clientWidth - 40) + 'px';
+    heart.style.top = Math.random() * (area.clientHeight - 40) + 'px';
+    heart.onclick = (e) => {
+      score++;
+      document.getElementById('game-score').textContent = score;
+      heart.remove();
+      spawnHeart();
+    };
+    area.appendChild(heart);
+    setTimeout(() => {
+      if(heart.parentNode) {
+        heart.remove();
+        spawnHeart();
+      }
+    }, 2000);
+  }
+
+  // Set default mood on load
+  setMood('tired');
 </script>
 </body>
 </html>
