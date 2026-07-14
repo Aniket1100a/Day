@@ -81,12 +81,16 @@
       html.gate-locked body{ overflow:hidden; height:100vh; }
       html.gate-locked body > *:not(#loveGate){
         filter: blur(22px) saturate(60%);
+        transform: scale(1.035);
         pointer-events:none;
         user-select:none;
       }
       html.unlocking body > *:not(#loveGate){
-        transition: filter .7s ease;
+        transition:
+          filter 1.3s cubic-bezier(.16,1,.3,1),
+          transform 1.3s cubic-bezier(.16,1,.3,1);
         filter: blur(0) saturate(100%);
+        transform: scale(1);
       }
       #loveGate{
         position:fixed;
@@ -100,9 +104,15 @@
         backdrop-filter:blur(2px);
         font-family:'Manrope', sans-serif;
         opacity:1;
-        transition:opacity .5s ease;
+        transition:
+          opacity .7s cubic-bezier(.16,1,.3,1),
+          backdrop-filter .7s cubic-bezier(.16,1,.3,1);
       }
-      #loveGate.fade-out{ opacity:0; pointer-events:none; }
+      #loveGate.fade-out{
+        opacity:0;
+        backdrop-filter:blur(0);
+        pointer-events:none;
+      }
       .gate-card{
         background:var(--paper, #FFFDFB);
         border:2.5px solid var(--blush, #FFD9E6);
@@ -112,6 +122,7 @@
         padding:32px 26px 28px;
         text-align:center;
         box-shadow:0 10px 0 var(--blush, #FFD9E6), 0 20px 40px rgba(74,46,66,.35);
+        position:relative;
       }
       .gate-card.shake{ animation: gateShake .4s ease; }
       @keyframes gateShake{
@@ -121,7 +132,37 @@
         60%{ transform:translateX(-6px); }
         80%{ transform:translateX(6px); }
       }
-      .gate-lock-icon{ font-size:34px; display:block; margin-bottom:10px; }
+      .gate-card.success{
+        animation: cardOpen .7s cubic-bezier(.34,1.15,.64,1) forwards;
+        pointer-events:none;
+      }
+      @keyframes cardOpen{
+        0%{ transform:scale(1) translateY(0); opacity:1; }
+        35%{ transform:scale(1.05) translateY(-2px); opacity:1; }
+        100%{ transform:scale(.94) translateY(-18px); opacity:0; }
+      }
+      .gate-lock-icon{
+        font-size:34px;
+        display:block;
+        margin-bottom:10px;
+        transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+      }
+      .gate-lock-icon.unlocked{ transform:scale(1.25) rotate(-12deg); }
+      .gate-burst{
+        position:absolute;
+        inset:0;
+        pointer-events:none;
+        overflow:visible;
+      }
+      .gate-burst span{
+        position:absolute;
+        top:50%;
+        left:50%;
+        font-size:18px;
+        opacity:0;
+        transform:translate(-50%,-50%);
+        transition:transform .9s cubic-bezier(.16,1,.3,1), opacity .9s ease;
+      }
       .gate-card h2{
         font-family:'Fredoka', sans-serif;
         font-weight:600;
@@ -202,7 +243,8 @@
     overlay.id = "loveGate";
     overlay.innerHTML = `
       <div class="gate-card" id="gateCard">
-        <span class="gate-lock-icon">🔒</span>
+        <div class="gate-burst" id="gateBurst"></div>
+        <span class="gate-lock-icon" id="gateLockIcon">🔒</span>
         <h2>Just for us</h2>
         <p class="gate-sub">Answer one of these correctly to get in</p>
         <p class="gate-question" id="gateQuestion"></p>
@@ -220,6 +262,25 @@
     const submitBtn = overlay.querySelector("#gateSubmit");
     const msg = overlay.querySelector("#gateMsg");
     const switchBtn = overlay.querySelector("#gateSwitch");
+    const lockIcon = overlay.querySelector("#gateLockIcon");
+    const burstEl = overlay.querySelector("#gateBurst");
+
+    function burstHearts() {
+      const bits = ["🩷", "✨", "💕", "🌸", "⭐"];
+      burstEl.innerHTML = "";
+      for (let i = 0; i < 14; i++) {
+        const s = document.createElement("span");
+        s.textContent = bits[i % bits.length];
+        burstEl.appendChild(s);
+        const angle = (Math.PI * 2 * i) / 14 + Math.random() * 0.3;
+        const dist = 90 + Math.random() * 50;
+        requestAnimationFrame(() => {
+          s.style.opacity = "1";
+          s.style.transform = `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px)) scale(1.1)`;
+          setTimeout(() => { s.style.opacity = "0"; }, 550);
+        });
+      }
+    }
 
     let order = shuffle([...QUESTIONS.keys()]);
     let pos = 0;
@@ -254,14 +315,31 @@
 
       if (correct) {
         localStorage.setItem(STORAGE_KEY, "true");
+        input.disabled = true;
+        submitBtn.disabled = true;
+        switchBtn.disabled = true;
         msg.style.color = "#3C9A6E";
         msg.textContent = "that's right 🩷 opening...";
-        document.documentElement.classList.add("unlocking");
+        lockIcon.textContent = "🔓";
+        lockIcon.classList.add("unlocked");
+        burstHearts();
+
+        // 1) card lifts and fades, body starts unblurring underneath — same beat
+        setTimeout(() => {
+          card.classList.add("success");
+          document.documentElement.classList.add("unlocking");
+        }, 280);
+
+        // 2) once the card's basically gone, fade the dim backdrop out too
+        setTimeout(() => {
+          overlay.classList.add("fade-out");
+        }, 780);
+
+        // 3) clean up once everything's settled
         setTimeout(() => {
           document.documentElement.classList.remove("gate-locked", "unlocking");
-          overlay.classList.add("fade-out");
-          setTimeout(() => overlay.remove(), 550);
-        }, 350);
+          overlay.remove();
+        }, 1550);
       } else {
         msg.style.color = "#C0335A";
         msg.textContent = "not quite — try again 💭";
