@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For you — Reels &amp; Photos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Manrope:wght@400;500;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF6F9;
+    --blush:#FFD9E6;
+    --pink:#FF9EBB;
+    --pink-deep:#F0729A;
+    --lavender:#C9B6F5;
+    --mint:#AEEBCE;
+    --plum:#6B4160;
+    --gold:#FFC24B;
+    --ink:#4A2E42;
+    --paper:#FFFDFB;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 8%, var(--mint) 0%, transparent 40%),
+      radial-gradient(circle at 90% 15%, var(--lavender) 0%, transparent 38%),
+      var(--cream);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:'Manrope', sans-serif;
+    line-height:1.6;
+  }
+  h1,h2{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    margin:0 0 .3em;
+    color:var(--pink-deep);
+  }
+  main{
+    max-width:900px;
+    margin:0 auto;
+    padding:56px 20px 90px;
+  }
+
+  /* header */
+  header{text-align:center;margin-bottom:36px;}
+  .back-link{
+    display:inline-block;
+    font-family:'Manrope',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    color:var(--pink-deep);
+    text-decoration:none;
+    background:var(--paper);
+    border:2px solid var(--blush);
+    padding:6px 16px;
+    border-radius:20px;
+    margin-bottom:22px;
+  }
+  .hero-badge{
+    display:inline-block;
+    background:var(--gold);
+    color:var(--plum);
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:18px;
+    padding:6px 18px;
+    border-radius:20px;
+    transform:rotate(-5deg);
+    box-shadow:0 3px 0 rgba(0,0,0,.08);
+    margin-bottom:14px;
+  }
+  header h1{font-size:clamp(30px,6vw,42px);}
+  header p{color:var(--plum);opacity:.85;max-width:420px;margin:0 auto;}
+
+  /* tabs */
+  .tabs{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:28px 0 32px;
+    flex-wrap:wrap;
+  }
+  .tab{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    background:var(--paper);
+    border:2.5px solid var(--blush);
+    color:var(--plum);
+    padding:9px 20px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:transform .15s ease;
+  }
+  .tab:hover{transform:translateY(-2px);}
+  .tab.active{
+    background:var(--pink);
+    border-color:var(--pink-deep);
+    color:#fff;
+  }
+
+  /* grid */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
+    gap:18px;
+  }
+  .card{
+    background:var(--paper);
+    border:2.5px solid var(--blush);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 4px 0 var(--blush);
+    transition:transform .2s ease;
+  }
+  .card:nth-child(odd){transform:rotate(-1deg);}
+  .card:nth-child(even){transform:rotate(1deg);}
+  .card:hover{transform:rotate(0deg) translateY(-4px);}
+  .card .media{
+    width:100%;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    display:block;
+    cursor:pointer;
+    background:var(--blush);
+  }
+  .card .card-body{padding:12px 14px 16px;}
+  .card .caption{
+    font-family:'Caveat', cursive;
+    font-weight:600;
+    font-size:19px;
+    color:var(--pink-deep);
+    margin:0 0 10px;
+  }
+  .badge-type{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    background:var(--lavender);
+    color:var(--plum);
+    padding:2px 10px;
+    border-radius:10px;
+    margin-bottom:8px;
+  }
+  .dl-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    width:100%;
+    justify-content:center;
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    background:var(--gold);
+    color:var(--plum);
+    border:none;
+    padding:9px 12px;
+    border-radius:14px;
+    text-decoration:none;
+    box-shadow:0 3px 0 #E0A833;
+    transition:transform .15s ease;
+  }
+  .dl-btn:hover{transform:translateY(-2px);}
+  .dl-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #E0A833;}
+
+  .empty{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--plum);
+    opacity:.7;
+    font-family:'Caveat', cursive;
+    font-size:22px;
+  }
+
+  /* lightbox */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(74,46,66,.85);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:50;
+    padding:24px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox-inner{
+    background:var(--paper);
+    border-radius:22px;
+    padding:16px;
+    max-width:480px;
+    width:100%;
+    max-height:88vh;
+    overflow:auto;
+    text-align:center;
+  }
+  .lightbox-inner img, .lightbox-inner video{
+    width:100%;
+    border-radius:14px;
+    display:block;
+  }
+  .lightbox-caption{
+    font-family:'Caveat', cursive;
+    font-size:20px;
+    color:var(--pink-deep);
+    margin:12px 0 14px;
+  }
+  .lightbox-close{
+    background:var(--blush);
+    border:none;
+    color:var(--plum);
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    padding:8px 18px;
+    border-radius:16px;
+    cursor:pointer;
+    margin-top:6px;
+  }
+
+  footer{
+    text-align:center;
+    padding:40px 20px 10px;
+    font-family:'Caveat', cursive;
+    font-size:20px;
+    color:var(--pink-deep);
+    opacity:.8;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <header>
+    <a class="back-link" href="index.html">← back to her page</a>
+    <div><span class="hero-badge">edited with love 🎬</span></div>
+    <h1>Reels &amp; Photos</h1>
+    <p>A little collection of moments I put together for you. Tap anything to see it bigger, or download it to keep.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-filter="all">All</button>
+    <button class="tab" data-filter="photo">Photos</button>
+    <button class="tab" data-filter="video">Reels</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="emptyMsg" style="display:none;">Nothing here yet — add some in the config below! 🌸</div>
+</main>
+
+<footer>made with love 🩷</footer>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <div id="lightboxMedia"></div>
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+    <button class="dl-btn" id="lightboxDownload">⬇ Download</button><br>
+    <button class="lightbox-close" id="lightboxClose">Close</button>
+  </div>
+</div>
+
+<script>
+  /* ============================================
+     👋 QUICK EDIT ZONE — set these to your repo
+     ============================================ */
+  const GITHUB_USER = "Aniket1100a";
+  const GITHUB_REPO = "Day";
+  const BRANCH = "main";
+
+  const PHOTO_EXT = ['jpg','jpeg','png','gif','webp'];
+  const VIDEO_EXT = ['mp4','mov','webm'];
+
+  function prettyName(filename){
+    const base = filename.replace(/\.[^/.]+$/, '');
+    return base.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  async function fetchFolder(path){
+    try{
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${path}?ref=${BRANCH}`);
+      if(!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    } catch(e){
+      return [];
+    }
+  }
+
+  async function buildMedia(){
+    const [photoFiles, videoFiles] = await Promise.all([
+      fetchFolder('media/photos'),
+      fetchFolder('media/videos')
+    ]);
+
+    const items = [];
+
+    photoFiles.forEach(f => {
+      const ext = f.name.split('.').pop().toLowerCase();
+      if(PHOTO_EXT.includes(ext)){
+        items.push({
+          type: 'photo',
+          src: f.download_url,
+          caption: prettyName(f.name),
+          downloadName: f.name
+        });
+      }
+    });
+
+    // any image sitting in media/videos alongside a same-named video is treated as its poster
+    const posterLookup = {};
+    videoFiles.forEach(f => {
+      const ext = f.name.split('.').pop().toLowerCase();
+      if(PHOTO_EXT.includes(ext)){
+        const base = f.name.replace(/\.[^/.]+$/, '').replace(/-poster$/i, '').toLowerCase();
+        posterLookup[base] = f.download_url;
+      }
+    });
+
+    videoFiles.forEach(f => {
+      const ext = f.name.split('.').pop().toLowerCase();
+      if(VIDEO_EXT.includes(ext)){
+        const base = f.name.replace(/\.[^/.]+$/, '').toLowerCase();
+        items.push({
+          type: 'video',
+          src: f.download_url,
+          poster: posterLookup[base] || null,
+          caption: prettyName(f.name),
+          downloadName: f.name
+        });
+      }
+    });
+
+    return items;
+  }
+
+  /* forces a real save-to-disk even for cross-origin file URLs */
+  async function triggerDownload(url, filename, btnEl){
+    const originalText = btnEl ? btnEl.textContent : null;
+    if(btnEl) btnEl.textContent = 'downloading…';
+    try{
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename || 'download';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(blobUrl);
+    } catch(e){
+      window.open(url, '_blank');
+    } finally {
+      if(btnEl) btnEl.textContent = originalText;
+    }
+  }
+
+  let media = [];
+  const grid = document.getElementById('grid');
+  const emptyMsg = document.getElementById('emptyMsg');
+
+  function renderGrid(filter){
+    grid.innerHTML = '';
+    const items = media.filter(m => filter === 'all' || m.type === filter);
+    emptyMsg.style.display = items.length ? 'none' : 'block';
+    emptyMsg.textContent = "Nothing here yet — add photos/reels to the media folders! 🌸";
+
+    items.forEach((item) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      let mediaEl;
+      if(item.type === 'video'){
+        mediaEl = document.createElement('video');
+        mediaEl.className = 'media';
+        mediaEl.src = item.src;
+        if(item.poster) mediaEl.poster = item.poster;
+        mediaEl.muted = true;
+        mediaEl.playsInline = true;
+        mediaEl.preload = 'metadata';
+      } else {
+        mediaEl = document.createElement('img');
+        mediaEl.className = 'media';
+        mediaEl.src = item.src;
+        mediaEl.loading = 'lazy';
+      }
+      mediaEl.addEventListener('click', () => openLightbox(item));
+      card.appendChild(mediaEl);
+
+      const body = document.createElement('div');
+      body.className = 'card-body';
+
+      const badge = document.createElement('span');
+      badge.className = 'badge-type';
+      badge.textContent = item.type === 'video' ? '🎬 Reel' : '📸 Photo';
+      body.appendChild(badge);
+
+      const caption = document.createElement('p');
+      caption.className = 'caption';
+      caption.textContent = item.caption || '';
+      body.appendChild(caption);
+
+      const dlBtn = document.createElement('button');
+      dlBtn.className = 'dl-btn';
+      dlBtn.textContent = '⬇ Download';
+      dlBtn.addEventListener('click', () => triggerDownload(item.src, item.downloadName, dlBtn));
+      body.appendChild(dlBtn);
+
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+  }
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderGrid(tab.dataset.filter);
+    });
+  });
+
+  /* lightbox */
+  const lightbox = document.getElementById('lightbox');
+  const lightboxMedia = document.getElementById('lightboxMedia');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  const lightboxDownload = document.getElementById('lightboxDownload');
+
+  function openLightbox(item){
+    lightboxMedia.innerHTML = '';
+    let el;
+    if(item.type === 'video'){
+      el = document.createElement('video');
+      el.src = item.src;
+      el.controls = true;
+      el.autoplay = true;
+      el.playsInline = true;
+      if(item.poster) el.poster = item.poster;
+    } else {
+      el = document.createElement('img');
+      el.src = item.src;
+    }
+    lightboxMedia.appendChild(el);
+    lightboxCaption.textContent = item.caption || '';
+    lightboxDownload.onclick = (e) => {
+      e.preventDefault();
+      triggerDownload(item.src, item.downloadName, lightboxDownload);
+    };
+    lightbox.classList.add('open');
+  }
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightboxMedia.innerHTML = '';
+  }
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+
+  (async () => {
+    emptyMsg.style.display = 'block';
+    emptyMsg.textContent = 'loading your photos & reels…';
+    media = await buildMedia();
+    renderGrid('all');
+  })();
+</script>
+</body>
+</html>
