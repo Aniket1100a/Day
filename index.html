@@ -26,7 +26,22 @@
     --gold:#FFC24B;
     --ink:#4A2E42;
     --paper:#FFFDFB;
+    --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  /* ---------- Cozy Mode Colors ---------- */
+  body.night-mode {
+    --cream: #1A1216;
+    --paper: #2D1F28;
+    --blush: #4A2E42;
+    --pink: #9A7280;
+    --pink-deep: #FF9EBB;
+    --lavender: #3D2E4A;
+    --mint: #1E2D25;
+    --ink: #FFF6F9;
+    --plum: #FFD9E6;
+  }
+
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
@@ -40,12 +55,14 @@
     font-family:'Manrope', sans-serif;
     line-height:1.6;
     overflow-x:hidden;
+    transition: background var(--transition), color var(--transition);
   }
   h1,h2{
     font-family:'Fredoka', sans-serif;
     font-weight:600;
     margin:0 0 .4em;
     color:var(--pink-deep);
+    transition: color var(--transition);
   }
   .script{
     font-family:'Caveat', cursive;
@@ -57,6 +74,43 @@
     padding:64px 24px;
     position:relative;
     z-index:1;
+  }
+
+  /* ---------- global cozy toggle ---------- */
+  .cozy-toggle {
+    position: fixed;
+    top: 20px; /* Kept at top right */
+    right: 20px;
+    z-index: 1000;
+    background: var(--paper);
+    border: 2.5px solid var(--blush);
+    padding: 10px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pink-deep);
+    box-shadow: 0 5px 0 var(--blush);
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+  }
+  .cozy-toggle:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--blush); }
+  .cozy-toggle:active { transform: translateY(2px); box-shadow: none; }
+
+  @media (max-width: 480px) {
+    .cozy-toggle .text { display: none; }
+    .cozy-toggle {
+      padding: 12px;
+      border-radius: 50%;
+      gap: 0;
+      width: 48px;
+      height: 48px;
+      justify-content: center;
+    }
   }
 
   /* ---------- floating hearts ambient bg ---------- */
@@ -98,7 +152,7 @@
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding-top:40px;
+    padding-top:60px;
   }
   .hero .heart{
     font-size:50px;
@@ -286,7 +340,7 @@
     transition:transform .2s ease, box-shadow .2s ease;
   }
   .menu-card:nth-child(odd){transform:rotate(-1.5deg);}
-  .menu-card:nth-child(even){transform:rotate(1.5deg);}
+  .menu-card:even){transform:rotate(1.5deg);}
   .menu-card:hover{
     transform:rotate(0deg) translateY(-4px) scale(1.03);
     box-shadow:0 8px 0 var(--blush);
@@ -469,6 +523,8 @@
 </head>
 <body>
 
+<button class="cozy-toggle" id="cozyToggle"><span id="cozyIcon">🌙</span> <span class="text">Cozy Mode</span></button>
+
 <div class="floaties" id="floaties"></div>
 
 <!-- HERO -->
@@ -575,6 +631,17 @@
     heroFallbackHeart.style.display = 'inline-block';
   });
   heroPhotoImg.src = HER_PHOTO;
+
+  /* Cozy mode toggle */
+  const cozyToggle = document.getElementById('cozyToggle');
+  const cozyIcon = document.getElementById('cozyIcon');
+  const cozyText = cozyToggle.querySelector('.text');
+  cozyToggle.addEventListener('click', () => {
+    document.body.classList.toggle('night-mode');
+    const isNight = document.body.classList.contains('night-mode');
+    cozyIcon.textContent = isNight ? '☀️' : '🌙';
+    cozyText.textContent = isNight ? 'Warm Mode' : 'Cozy Mode';
+  });
 
   /* floating cute bits */
   const floatiesEl = document.getElementById('floaties');
