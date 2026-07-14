@@ -535,7 +535,7 @@
     <span class="hero-photo-badge">🩷</span>
   </div>
   <div class="heart" id="heroFallbackHeart" style="display:none;">🩷</div>
-  <h1>Hey <span data-name="her">Love</span></h1>
+  <h1><span id="greeting">Hey</span> <span data-name="her">Love</span></h1>
   <p>I know today's been a lot — cramps, tiredness, all of it. I made you this little corner of the internet just to say: I see you, and I've got you today.</p>
   <div class="scroll-hint">scroll down, this is for you ↓</div>
   <p style="margin-top:28px;"><a href="gallery.html" style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;color:var(--pink-deep);background:var(--paper);border:2px solid var(--blush);padding:8px 20px;border-radius:20px;text-decoration:none;">🎬 see your reels &amp; photos</a></p>
@@ -631,6 +631,15 @@
     heroFallbackHeart.style.display = 'inline-block';
   });
   heroPhotoImg.src = HER_PHOTO;
+
+  /* time-based greeting */
+  const hours = new Date().getHours();
+  let greetingText = "Hey";
+  if (hours < 12) greetingText = "Good Morning";
+  else if (hours < 17) greetingText = "Good Afternoon";
+  else if (hours < 21) greetingText = "Good Evening";
+  else greetingText = "Sweet Dreams";
+  document.getElementById('greeting').textContent = greetingText;
 
   /* Cozy mode toggle */
   const cozyToggle = document.getElementById('cozyToggle');
